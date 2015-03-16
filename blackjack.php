@@ -129,18 +129,6 @@ function echoHand($hand, $name, $hidden = false) {
     }
 }
 
-// build the deck of cards
-$deck = buildDeck($cardElements);
-
-// initialize a dealer and player hand
-$dealer = [];
-$player = [];
-
-// dealer and player each draw two cards
-drawCard($dealer, $deck);
-drawCard($player, $deck);
-drawCard($dealer, $deck);
-drawCard($player, $deck);
 
 // show game title
 echo "\n===============================================\n";
@@ -149,70 +137,97 @@ echo "===============================================\n";
 
 echo "\nHowdy! Enter your name to begin: ";
 $playerName = strtoupper(trim(fgets(STDIN)));
-echo "\n-----------------------------------------------";
 
-// echo the dealer hand, only showing the first card
-echoHand($dealer, 'Dealer', true);
 
-// echo the player hand
-echoHand($player, $playerName);
+do {
+    // build the deck of cards
+    $deck = buildDeck($cardElements);
 
-// allow player to "(H)it or (S)tay?" till they bust (exceed 21) or stay
-while (getHandTotal($player) <= 21) {
+    // initialize a dealer and player hand
+    $dealer = [];
+    $player = [];
 
-    // if player's total is 21 tell them they won (regardless of dealer hand)
-    if (getHandTotal($player) == 21) {
-        // also show dealer's hand
-        echoHand($dealer, 'Dealer');
+    // dealer and player each draw two cards
+    drawCard($dealer, $deck);
+    drawCard($player, $deck);
+    drawCard($dealer, $deck);
+    drawCard($player, $deck);
+
+    echo "\n-----------------------------------------------";
+
+    // echo the dealer hand, only showing the first card
+    echoHand($dealer, 'Dealer', true);
+
+    // echo the player hand
+    echoHand($player, $playerName);
+
+    // allow player to "(H)it or (S)tay?" till they bust (exceed 21) or stay
+    while (getHandTotal($player) <= 21) {
+
+        // if player's total is 21 tell them they won (regardless of dealer hand)
+        if (getHandTotal($player) == 21) {
+            // also show dealer's hand
+            echoHand($dealer, 'Dealer');
+            echo "\n>> You won!\n";
+            exit(0);       
+        }
+
+        echo "(H)it or (S)tay? ";
+
+        $input = strtoupper(trim(fgets(STDIN)));
+
+        if ($input == 'H') {
+            drawCard($player, $deck);
+            echoHand($player, $playerName);
+        } else {
+            break;
+        }
+    }
+
+    // show the dealer's hand (all cards)
+    echoHand($dealer, 'Dealer');
+
+    // at this point, if the player has more than 21, tell them they busted
+    if (getHandTotal($player) > 21) {
+        echo "\n>> You busted!\n";
+        // exit(0);
+    } elseif (getHandTotal($player) == 21) {
+    // otherwise, if they have 21, tell them they won (regardless of dealer hand)
         echo "\n>> You won!\n";
-        exit(0);       
-    }
-
-    echo "(H)it or (S)tay? ";
-
-    $input = strtoupper(trim(fgets(STDIN)));
-
-    if ($input == 'H') {
-        drawCard($player, $deck);
-        echoHand($player, $playerName);
+        // exit(0);
     } else {
-        break;
+    // if neither of the above are true, then the dealer needs to draw more cards
+    // dealer draws until their hand has a value of at least 17
+        while (getHandTotal($dealer) <= 17) {
+           drawCard($dealer, $deck); 
+           // show the dealer hand each time they draw a card
+           echoHand($dealer, 'Dealer');
+       }
     }
-}
 
-// show the dealer's hand (all cards)
-echoHand($dealer, 'Dealer');
+    // finally, we can check and see who won
+    if (getHandTotal($dealer) > 21) {
+        // by this point, if dealer has busted, then player automatically wins
+        echo "\n>> Dealer busted. You won!\n";
+    } elseif (getHandTotal($dealer) == getHandTotal($player)) {
+        // if player and dealer tie, it is a "push"
+        echo "\n>> PUSH (tied!)\n";
+    } elseif(getHandTotal($dealer) > getHandTotal($player)) {
+    // if dealer has more than player, dealer wins, otherwise, player wins
+        echo "\n>> Dealer won!\n";
+    } elseif(getHandTotal($dealer) < getHandTotal($player)) {
+        echo "\n>> You won!\n";
+    }
 
-// at this point, if the player has more than 21, tell them they busted
-if (getHandTotal($player) > 21) {
-    echo "\n>> You busted!\n";
-    exit(0);
-} elseif (getHandTotal($player) == 21) {
-// otherwise, if they have 21, tell them they won (regardless of dealer hand)
-    echo "\n>> You won!\n";
-    exit(0);
-} else {
-// if neither of the above are true, then the dealer needs to draw more cards
-// dealer draws until their hand has a value of at least 17
-    while (getHandTotal($dealer) <= 17) {
-       drawCard($dealer, $deck); 
-       // show the dealer hand each time they draw a card
-       echoHand($dealer, 'Dealer');
-   }
-}
+    // ask user if they want to play again
+    echo "\n>> PLAY AGAIN? (Y)es or (N)o: ";
+    $playAgain = strtoupper(trim(fgets(STDIN)));
 
-// finally, we can check and see who won
-if (getHandTotal($dealer) > 21) {
-    // by this point, if dealer has busted, then player automatically wins
-    echo "\n>> Dealer busted. You won!\n";
-} elseif (getHandTotal($dealer) == getHandTotal($player)) {
-    // if player and dealer tie, it is a "push"
-    echo "\n>> PUSH (tied!)\n";
-} elseif(getHandTotal($dealer) > getHandTotal($player)) {
-// if dealer has more than player, dealer wins, otherwise, player wins
-    echo "\n>> Dealer won!\n";
-} elseif(getHandTotal($dealer) < getHandTotal($player)) {
-    echo "\n>> You won!\n";
-}
+    if ($playAgain == 'Y') {
+        $rematch = true;
+    } else {
+        $rematch = false;
+    }
 
+} while ($rematch != false);
 
