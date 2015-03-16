@@ -16,9 +16,11 @@ $cardElements = [
 // cards should be "VALUE SUIT". ex: "7 H"
 // make sure to shuffle the deck before returning it
 function buildDeck($input) {
-
+    // filter out any potentially empty values (does not apply here)
+    $input = array_filter($input);
+    // set result to an array within an array
     $result = [array()];
-
+    // get cartesian product of the associative cardElements array
     foreach ($input as $key => $items) {
         $append = array();
 
@@ -28,10 +30,10 @@ function buildDeck($input) {
                 $append[] = $product;
             }
         }
-
+        // append the arrays to the result array 
         $result = $append;
     }
-    // shuffle the deck
+    // shuffle the deck and return it
     shuffle($result);
     return $result;
 }  
@@ -75,11 +77,12 @@ function getCardValue($card) {
 // aces can be 1 or 11 (make them 1 if total value is over 21)
 function getHandTotal($hand) {
     $total = 0;
+
     foreach($hand as $card) {
         $total += getCardValue($card);
 
         if (cardIsAce($card) && $total > 21) {
-            $total -= 20; // need to test this
+            $total -= 10;
         }
     }
 
@@ -89,7 +92,7 @@ function getHandTotal($hand) {
 // draw a card from the deck into a hand
 // pass by reference (both hand and deck passed in are modified)
 function drawCard(&$hand, &$deck) {
-  // todo
+    $hand[] = array_pop($deck);
 }
 
 // print out a hand of cards
@@ -100,47 +103,107 @@ function drawCard(&$hand, &$deck) {
 // or:
 // Player: [J D] [2 D] Total: 12
 function echoHand($hand, $name, $hidden = false) {
-  // todo
+    if ($hidden) {
+        // show only dealer's first card only
+        foreach($hand as $key => $card) {
+            if ($key == 0) {
+                echo "\n$name: [" . $hand[0]['value'] . " " . $hand[0]['suit'] . "] ";
+            } else {
+                echo "[???] Total: ???" . PHP_EOL;
+            }
+        }
+
+    } else {
+        // show all of player's cards or dealer's cards
+        echo "\n-------------------------------------------";
+
+        foreach($hand as $key => $card) {
+            if ($key == 0) {
+                echo "\n$name: [" . $hand[0]['value'] . " " . $hand[0]['suit'] . "] ";
+            } elseif ($key == count($hand) - 1) {
+                echo "[" . $hand[$key]['value'] . " " . $hand[$key]['suit'] . "] Total: " . getHandTotal($hand) . PHP_EOL . PHP_EOL;
+            } else {
+                echo "[" . $hand[$key]['value'] . " " . $hand[$key]['suit'] . "] ";
+            }
+        }
+    }
 }
 
 // build the deck of cards
 $deck = buildDeck($cardElements);
-// print_r($deck);
-$card = array_pop($deck);
-print_r($card);
-echo getCardValue($card);
 
 // initialize a dealer and player hand
 $dealer = [];
 $player = [];
 
 // dealer and player each draw two cards
-// todo
+drawCard($dealer, $deck);
+drawCard($player, $deck);
+drawCard($dealer, $deck);
+drawCard($player, $deck);
 
 // echo the dealer hand, only showing the first card
-// todo
+echoHand($dealer, 'Dealer', true);
 
 // echo the player hand
-// todo
+echoHand($player, 'PLAYER');
 
 // allow player to "(H)it or (S)tay?" till they bust (exceed 21) or stay
-// while (/* todo */) {
-  // todo
-// }
+while (getHandTotal($player) <= 21) {
+
+    // if player's total is 21 tell them they won (regardless of dealer hand)
+    if (getHandTotal($player) == 21) {
+        // also show dealer's hand
+        echoHand($dealer, 'Dealer');
+        echo "\n>> You won!\n";
+        exit(0);       
+    }
+
+    echo "(H)it or (S)tay? ";
+
+    $input = strtoupper(trim(fgets(STDIN)));
+
+    if ($input == 'H') {
+        drawCard($player, $deck);
+        echoHand($player, 'PLAYER');
+    } else {
+        break;
+    }
+}
 
 // show the dealer's hand (all cards)
-// todo
-
-// todo (all comments below)
+echoHand($dealer, 'Dealer');
 
 // at this point, if the player has more than 21, tell them they busted
+if (getHandTotal($player) > 21) {
+    echo "\n>> You busted!\n";
+    exit(0);
+} elseif (getHandTotal($player) == 21) {
 // otherwise, if they have 21, tell them they won (regardless of dealer hand)
-
+    echo "\n>> You won!\n";
+    exit(0);
+} else {
 // if neither of the above are true, then the dealer needs to draw more cards
 // dealer draws until their hand has a value of at least 17
-// show the dealer hand each time they draw a card
+    while (getHandTotal($dealer) <= 17) {
+       drawCard($dealer, $deck); 
+       // show the dealer hand each time they draw a card
+       echoHand($dealer, 'Dealer');
+   }
+}
 
 // finally, we can check and see who won
-// by this point, if dealer has busted, then player automatically wins
-// if player and dealer tie, it is a "push"
+if (getHandTotal($dealer) > 21) {
+    // by this point, if dealer has busted, then player automatically wins
+    echo "\n>> Dealer busted. You won!\n";
+} elseif (getHandTotal($dealer) == getHandTotal($player)) {
+    // if player and dealer tie, it is a "push"
+    echo "\n>> Push (tie)\n";
+} elseif(getHandTotal($dealer) > getHandTotal($player)) {
 // if dealer has more than player, dealer wins, otherwise, player wins
+    echo "\n>> Dealer won!\n";
+} elseif(getHandTotal($dealer) < getHandTotal($player)) {
+    echo "\n>> You won!\n";
+}
+
+
