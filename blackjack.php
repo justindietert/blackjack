@@ -107,9 +107,9 @@ function echoHand($hand, $name, $hidden = false) {
         // show only dealer's first card only
         foreach($hand as $key => $card) {
             if ($key == 0) {
-                echo "\n$name: [" . $hand[0]['value'] . " " . $hand[0]['suit'] . "] ";
+                echo "\n$name: [" . $hand[0]['value'] . " of " . $hand[0]['suit'] . "] ";
             } else {
-                echo "[???] Total: ???" . PHP_EOL;
+                echo "[?????] Total: ??" . PHP_EOL;
             }
         }
 
@@ -119,11 +119,11 @@ function echoHand($hand, $name, $hidden = false) {
 
         foreach($hand as $key => $card) {
             if ($key == 0) {
-                echo "\n$name: [" . $hand[0]['value'] . " " . $hand[0]['suit'] . "] ";
+                echo "\n$name: [" . $hand[0]['value'] . " of " . $hand[0]['suit'] . "] ";
             } elseif ($key == count($hand) - 1) {
-                echo "[" . $hand[$key]['value'] . " " . $hand[$key]['suit'] . "] Total: " . getHandTotal($hand) . PHP_EOL . PHP_EOL;
+                echo "[" . $hand[$key]['value'] . " of " . $hand[$key]['suit'] . "] Total: " . getHandTotal($hand) . PHP_EOL . PHP_EOL;
             } else {
-                echo "[" . $hand[$key]['value'] . " " . $hand[$key]['suit'] . "] ";
+                echo "[" . $hand[$key]['value'] . " of " . $hand[$key]['suit'] . "] ";
             }
         }
     }
