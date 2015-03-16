@@ -107,9 +107,13 @@ function echoHand($hand, $name, $hidden = false) {
         // show only dealer's first card only
         foreach($hand as $key => $card) {
             if ($key == 0) {
+                usleep(250000);
                 echo "\n$name: [" . $hand[0]['value'] . " of " . $hand[0]['suit'] . "] ";
             } else {
-                echo "[??????] Total: ??" . PHP_EOL;
+                usleep(250000);
+                echo "[??????] ";
+                usleep(250000);
+                echo "Total: ??" . PHP_EOL;
             }
         }
 
@@ -119,10 +123,15 @@ function echoHand($hand, $name, $hidden = false) {
 
         foreach($hand as $key => $card) {
             if ($key == 0) {
+                usleep(250000);
                 echo "\n$name: [" . $hand[0]['value'] . " of " . $hand[0]['suit'] . "] ";
             } elseif ($key == count($hand) - 1) {
-                echo "[" . $hand[$key]['value'] . " of " . $hand[$key]['suit'] . "] Total: " . getHandTotal($hand) . PHP_EOL . PHP_EOL;
+                usleep(250000);
+                echo "[" . $hand[$key]['value'] . " of " . $hand[$key]['suit'] . "] ";
+                usleep(250000);
+                echo "Total: " . getHandTotal($hand) . PHP_EOL . PHP_EOL;
             } else {
+                usleep(250000);
                 echo "[" . $hand[$key]['value'] . " of " . $hand[$key]['suit'] . "] ";
             }
         }
@@ -131,10 +140,12 @@ function echoHand($hand, $name, $hidden = false) {
 
 
 // show game title
+usleep(500000);
 echo "\n===============================================\n";
 echo "++++++21++++++ B L A C K J A C K ++++++21++++++\n";
 echo "===============================================\n";
 
+usleep(500000);
 echo "\nHowdy! Enter your name to begin: ";
 $playerName = strtoupper(trim(fgets(STDIN)));
 // set rematch to false by default
@@ -164,14 +175,17 @@ do {
     drawCard($dealer, $deck);
     drawCard($player, $deck);
 
+    usleep(500000);
     echo "\n---";
 
     // echo the dealer hand, only showing the first card
     echoHand($dealer, 'Dealer', true);
 
+    usleep(750000);
     // echo the player hand
     echoHand($player, $playerName);
 
+    usleep(500000);
     // allow player to "(H)it or (S)tay?" till they bust (exceed 21) or stay
     while (getHandTotal($player) <= 21) {
 
@@ -232,6 +246,7 @@ do {
         echo "\n>> You won!\n";
     }
 
+    usleep(1500000);
     // ask user if they want to play again
     echo "\n>> PLAY AGAIN? (Y)es or (N)o: ";
     $playAgain = strtoupper(trim(fgets(STDIN)));
