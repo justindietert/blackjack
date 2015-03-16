@@ -147,6 +147,10 @@ do {
     $dealer = [];
     $player = [];
 
+    // set $busted and $playerWon to false by default
+    $busted = false;
+    $playerWon = false;
+
     // dealer and player each draw two cards
     drawCard($dealer, $deck);
     drawCard($player, $deck);
@@ -166,17 +170,16 @@ do {
 
         // if player's total is 21 tell them they won (regardless of dealer hand)
         if (getHandTotal($player) == 21) {
-            // also show dealer's hand
-            echoHand($dealer, 'Dealer');
-            echo "\n>> You won!\n";
-            exit(0);       
+            $busted = false;  
+            $playerWon = true;   
         }
 
-        echo "(H)it or (S)tay? ";
+        if ($playerWon != true) {
+            echo "(H)it or (S)tay? ";
+            $input = strtoupper(trim(fgets(STDIN)));
+        }
 
-        $input = strtoupper(trim(fgets(STDIN)));
-
-        if ($input == 'H') {
+        if ($input == 'H' && $playerWon != true) {
             drawCard($player, $deck);
             echoHand($player, $playerName);
         } else {
@@ -189,12 +192,11 @@ do {
 
     // at this point, if the player has more than 21, tell them they busted
     if (getHandTotal($player) > 21) {
-        echo "\n>> You busted!\n";
-        // exit(0);
+        echo "\n>> You busted. Dealer won!\n";
+        $busted = true;
     } elseif (getHandTotal($player) == 21) {
     // otherwise, if they have 21, tell them they won (regardless of dealer hand)
-        echo "\n>> You won!\n";
-        // exit(0);
+        $busted = false;
     } else {
     // if neither of the above are true, then the dealer needs to draw more cards
     // dealer draws until their hand has a value of at least 17
@@ -211,11 +213,11 @@ do {
         echo "\n>> Dealer busted. You won!\n";
     } elseif (getHandTotal($dealer) == getHandTotal($player)) {
         // if player and dealer tie, it is a "push"
-        echo "\n>> PUSH (tied!)\n";
+        echo "\n>> Standoff (tied!)\n";
     } elseif(getHandTotal($dealer) > getHandTotal($player)) {
     // if dealer has more than player, dealer wins, otherwise, player wins
         echo "\n>> Dealer won!\n";
-    } elseif(getHandTotal($dealer) < getHandTotal($player)) {
+    } elseif(getHandTotal($dealer) < getHandTotal($player) && $busted == false) {
         echo "\n>> You won!\n";
     }
 
