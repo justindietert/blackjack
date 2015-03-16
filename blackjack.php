@@ -147,11 +147,15 @@ echo "\n===============================================\n";
 echo "++++++21++++++ B L A C K J A C K ++++++21++++++\n";
 echo "===============================================\n";
 
+echo "\nHowdy! Enter your name to begin: ";
+$playerName = strtoupper(trim(fgets(STDIN)));
+echo "\n-----------------------------------------------";
+
 // echo the dealer hand, only showing the first card
 echoHand($dealer, 'Dealer', true);
 
 // echo the player hand
-echoHand($player, 'PLAYER');
+echoHand($player, $playerName);
 
 // allow player to "(H)it or (S)tay?" till they bust (exceed 21) or stay
 while (getHandTotal($player) <= 21) {
@@ -170,7 +174,7 @@ while (getHandTotal($player) <= 21) {
 
     if ($input == 'H') {
         drawCard($player, $deck);
-        echoHand($player, 'PLAYER');
+        echoHand($player, $playerName);
     } else {
         break;
     }
