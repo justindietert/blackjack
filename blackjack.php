@@ -109,13 +109,13 @@ function echoHand($hand, $name, $hidden = false) {
             if ($key == 0) {
                 echo "\n$name: [" . $hand[0]['value'] . " of " . $hand[0]['suit'] . "] ";
             } else {
-                echo "[?????] Total: ??" . PHP_EOL;
+                echo "[??????] Total: ??" . PHP_EOL;
             }
         }
 
     } else {
         // show all of player's cards or dealer's cards
-        echo "\n-------------------------------------------";
+        echo "\n-----------------------------------------------";
 
         foreach($hand as $key => $card) {
             if ($key == 0) {
@@ -141,6 +141,11 @@ drawCard($dealer, $deck);
 drawCard($player, $deck);
 drawCard($dealer, $deck);
 drawCard($player, $deck);
+
+// show game title
+echo "\n===============================================\n";
+echo "++++++21++++++ B L A C K J A C K ++++++21++++++\n";
+echo "===============================================\n";
 
 // echo the dealer hand, only showing the first card
 echoHand($dealer, 'Dealer', true);
@@ -198,7 +203,7 @@ if (getHandTotal($dealer) > 21) {
     echo "\n>> Dealer busted. You won!\n";
 } elseif (getHandTotal($dealer) == getHandTotal($player)) {
     // if player and dealer tie, it is a "push"
-    echo "\n>> Push (tie)\n";
+    echo "\n>> PUSH (tied!)\n";
 } elseif(getHandTotal($dealer) > getHandTotal($player)) {
 // if dealer has more than player, dealer wins, otherwise, player wins
     echo "\n>> Dealer won!\n";
