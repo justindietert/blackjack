@@ -1,24 +1,59 @@
 <?php
 
-// complete all "todo"s to build a blackjack game
-
 // create an array for suits
 $suits = ['C', 'H', 'S', 'D'];
 
-// create an array for cards
-$cards = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+// create an array for values
+$values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+
+// group card elements into one array
+$cardElements = [
+    'value' => $values,
+    'suit' => $suits
+];
 
 // build a deck (array) of cards
-// card values should be "VALUE SUIT". ex: "7 H"
+// cards should be "VALUE SUIT". ex: "7 H"
 // make sure to shuffle the deck before returning it
-function buildDeck($suits, $cards) {
-  // todo
+function buildDeck($input) {
+
+    $result = [array()];
+
+    foreach ($input as $key => $items) {
+        $append = array();
+
+        foreach($result as $product) {
+            foreach($items as $item) {
+                $product[$key] = $item;
+                $append[] = $product;
+            }
+        }
+
+        $result = $append;
+    }
+    // shuffle the deck
+    shuffle($result);
+    return $result;
 }  
 
 // determine if a card is an ace
 // return true for ace, false for anything else
 function cardIsAce($card) {
-  // todo
+    if ($card['value'] == 'A') {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// determine if card is a face card
+// return true for face card, false for anything else
+function faceCard($card) {
+    if ($card['value'] == 'J' || $card['value'] == 'Q' || $card['value'] == 'K') {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 // determine the value of an individual card (string)
@@ -26,14 +61,29 @@ function cardIsAce($card) {
 // face cards are worth 10
 // numeric cards are worth their value
 function getCardValue($card) {
-  // todo
+    if (cardIsAce($card)) {
+        return 11;
+    } elseif (faceCard($card)) {
+        return 10;
+    } else {
+        return intval($card['value']);
+    }
 }
 
 // get total value for a hand of cards
 // don't forget to factor in aces
 // aces can be 1 or 11 (make them 1 if total value is over 21)
 function getHandTotal($hand) {
-  // todo
+    $total = 0;
+    foreach($hand as $card) {
+        $total += getCardValue($card);
+
+        if (cardIsAce($card) && $total > 21) {
+            $total -= 20; // need to test this
+        }
+    }
+
+    return $total;
 }
 
 // draw a card from the deck into a hand
@@ -54,7 +104,11 @@ function echoHand($hand, $name, $hidden = false) {
 }
 
 // build the deck of cards
-$deck = buildDeck($suits, $cards);
+$deck = buildDeck($cardElements);
+// print_r($deck);
+$card = array_pop($deck);
+print_r($card);
+echo getCardValue($card);
 
 // initialize a dealer and player hand
 $dealer = [];
@@ -70,9 +124,9 @@ $player = [];
 // todo
 
 // allow player to "(H)it or (S)tay?" till they bust (exceed 21) or stay
-while (/* todo */) {
+// while (/* todo */) {
   // todo
-}
+// }
 
 // show the dealer's hand (all cards)
 // todo
