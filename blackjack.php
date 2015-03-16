@@ -115,7 +115,7 @@ function echoHand($hand, $name, $hidden = false) {
 
     } else {
         // show all of player's cards or dealer's cards
-        echo "\n-----------------------------------------------";
+        echo "\n---";
 
         foreach($hand as $key => $card) {
             if ($key == 0) {
@@ -137,9 +137,16 @@ echo "===============================================\n";
 
 echo "\nHowdy! Enter your name to begin: ";
 $playerName = strtoupper(trim(fgets(STDIN)));
-
+// set rematch to false by default
+$rematch = false;
 
 do {
+    // if round is rematch, display this line for separation from previous round
+    if ($rematch == true) {
+        echo "\n\n\n/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\\\n";
+        echo "\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\n";
+    }
+
     // build the deck of cards
     $deck = buildDeck($cardElements);
 
@@ -157,7 +164,7 @@ do {
     drawCard($dealer, $deck);
     drawCard($player, $deck);
 
-    echo "\n-----------------------------------------------";
+    echo "\n---";
 
     // echo the dealer hand, only showing the first card
     echoHand($dealer, 'Dealer', true);
@@ -173,9 +180,13 @@ do {
             $busted = false;  
             $playerWon = true;   
         }
+        // if player is dealt 21 on first hand, set input to 'STAY' by default
+        if ($playerWon == true) {
+            $input == 'S';
+        }
 
         if ($playerWon != true) {
-            echo "(H)it or (S)tay? ";
+            echo ">> (H)it or (S)tay? ";
             $input = strtoupper(trim(fgets(STDIN)));
         }
 
@@ -200,7 +211,7 @@ do {
     } else {
     // if neither of the above are true, then the dealer needs to draw more cards
     // dealer draws until their hand has a value of at least 17
-        while (getHandTotal($dealer) <= 17) {
+        while (getHandTotal($dealer) < 17) {
            drawCard($dealer, $deck); 
            // show the dealer hand each time they draw a card
            echoHand($dealer, 'Dealer');
