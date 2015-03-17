@@ -111,7 +111,7 @@ function echoHand($hand, $name, $hidden = false) {
             } else {
                 echo "[??????] ";
                 usleep(250000);
-                echo "Total: "; 
+                echo "/ Total: "; 
                 usleep(500000);
                 echo "??" . PHP_EOL;
             }
@@ -128,7 +128,7 @@ function echoHand($hand, $name, $hidden = false) {
             } elseif ($key == count($hand) - 1) {
                 echo "[" . $hand[$key]['value'] . " of " . $hand[$key]['suit'] . "] ";
                 usleep(250000);
-                echo "Total: ";
+                echo "/ Total: ";
                 usleep(500000);
                 echo getHandTotal($hand) . PHP_EOL . PHP_EOL;
             } else {
@@ -154,6 +154,7 @@ $rematch = false;
 do {
     // if round is rematch, display this line for separation from previous round
     if ($rematch == true) {
+        usleep(250000);
         echo "\n\n\n/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\\\n";
         echo "\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\n";
     }
