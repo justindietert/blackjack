@@ -1,7 +1,8 @@
 <?php
 
 // create an array for suits
-$suits = ['C', 'H', 'S', 'D'];
+$suits = ['♣', '♥', '♠', '♦'];
+// C H S D
 
 // create an array for values
 $values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
@@ -107,9 +108,9 @@ function echoHand($hand, $name, $hidden = false) {
         // show only dealer's first card only
         foreach($hand as $key => $card) {
             if ($key == 0) {
-                echo "\n$name: [" . $hand[0]['value'] . " of " . $hand[0]['suit'] . "] ";
+                echo "\n$name: [" . $hand[0]['value'] . " " . $hand[0]['suit'] . "] ";
             } else {
-                echo "[??????] ";
+                echo "[###] ";
                 usleep(250000);
                 echo "/ Total: "; 
                 usleep(500000);
@@ -124,15 +125,15 @@ function echoHand($hand, $name, $hidden = false) {
 
         foreach($hand as $key => $card) {
             if ($key == 0) {
-                echo "\n$name: [" . $hand[0]['value'] . " of " . $hand[0]['suit'] . "] ";
+                echo "\n$name: [" . $hand[0]['value'] . " " . $hand[0]['suit'] . "] ";
             } elseif ($key == count($hand) - 1) {
-                echo "[" . $hand[$key]['value'] . " of " . $hand[$key]['suit'] . "] ";
+                echo "[" . $hand[$key]['value'] . " " . $hand[$key]['suit'] . "] ";
                 usleep(250000);
                 echo "/ Total: ";
                 usleep(500000);
                 echo getHandTotal($hand) . PHP_EOL . PHP_EOL;
             } else {
-                echo "[" . $hand[$key]['value'] . " of " . $hand[$key]['suit'] . "] ";
+                echo "[" . $hand[$key]['value'] . " " . $hand[$key]['suit'] . "] ";
             }
         }
     }
@@ -148,6 +149,7 @@ echo "===============================================\n";
 usleep(250000);
 echo "\nHowdy! Enter your name to begin: ";
 $playerName = strtoupper(trim(fgets(STDIN)));
+
 // set rematch to false by default
 $rematch = false;
 
@@ -182,7 +184,7 @@ do {
     // echo the dealer hand, only showing the first card
     echoHand($dealer, 'Dealer', true);
 
-    usleep(500000);
+    usleep(250000);
     // echo the player hand
     echoHand($player, $playerName);
 
@@ -218,10 +220,12 @@ do {
 
     // at this point, if the player has more than 21, tell them they busted
     if (getHandTotal($player) > 21) {
-        echo "\n>> You busted. Dealer won!\n";
         $busted = true;
+        echo "\n>> You busted. Dealer won...\n";
+        usleep(500000);
+        echo "\n   (╯°□°）╯ ︵ ┻━┻\n";
     } elseif (getHandTotal($player) == 21) {
-    // otherwise, if they have 21, tell them they won (regardless of dealer hand)
+        // otherwise, if they have 21, tell them they won (regardless of dealer hand)
         $busted = false;
     } else {
     // if neither of the above are true, then the dealer needs to draw more cards
@@ -238,14 +242,21 @@ do {
     if (getHandTotal($dealer) > 21) {
         // by this point, if dealer has busted, then player automatically wins
         echo "\n>> Dealer busted. You won!\n";
+        usleep(500000);
+        echo "\n   ヽ(‾▿‾)/\n";
     } elseif (getHandTotal($dealer) == getHandTotal($player)) {
         // if player and dealer tie, it is a "push"
         echo "\n>> Standoff (tied!)\n";
+        echo "\n   \_(ʘ_ʘ)_/\n";
     } elseif(getHandTotal($dealer) > getHandTotal($player)) {
-    // if dealer has more than player, dealer wins, otherwise, player wins
-        echo "\n>> Dealer won!\n";
+        // if dealer has more than player, dealer wins, otherwise, player wins
+        echo "\n>> Dealer won...\n";
+        usleep(500000);
+        echo "\n   (╯°□°）╯ ︵ ┻━┻\n";
     } elseif(getHandTotal($dealer) < getHandTotal($player) && $busted == false) {
         echo "\n>> You won!\n";
+        usleep(500000);
+        echo "\n   ヽ(‾▿‾)/\n";
     }
 
     usleep(500000);
@@ -260,4 +271,12 @@ do {
     }
 
 } while ($rematch != false);
+
+usleep(500000);
+// say goodbye if player quits
+echo "  ___              _ _             _\n";
+echo " / __|___  ___  __| | |__ _  _ ___| |\n";
+echo"| (_ / _ \/ _ \/ _` | '_ \ || / -_)_|\n";
+echo" \___\___/\___/\__,_|_.__/\_, \___(_)\n";
+echo"                           |__/       \n";
 
